@@ -1,12 +1,122 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Red Hat Display', sans-serif;
+    box-sizing: border-box;
+}
 
-/* 
+.whole-container {
+    display: flex;
+    flex-direction: column;
+    background-color:hsla(0,100%,50%,1);
+    background-image:
+    radial-gradient(at 40% 20%, hsla(28,100%,74%,1) 0px, transparent 50%),
+    radial-gradient(at 80% 0%, hsla(189,100%,56%,1) 0px, transparent 50%),
+    radial-gradient(at 0% 50%, hsla(355,100%,93%,1) 0px, transparent 50%),
+    radial-gradient(at 80% 50%, hsla(340,100%,76%,1) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, hsla(22,100%,77%,1) 0px, transparent 50%),
+    radial-gradient(at 80% 100%, hsla(242,100%,70%,1) 0px, transparent 50%),
+    radial-gradient(at 0% 0%, hsla(343,100%,76%,1) 0px, transparent 50%);
+    background-size: cover;
 
-    You can write your own styles here...
-    
-    
-    ...Or you can use the import command to include 
-    other sylesheets into your bunde as well, e.j:
-    
-    import 'relative/path/to/stylesheet.scss';
+}
 
-*/
+.title{
+    text-align: center;
+    color: white;
+    background-color: rgb(25, 25, 25);
+    padding: 25px;
+}
+
+.title h2{
+    text-transform: uppercase;
+}
+
+.task-container {
+    width: 90vw;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 99px - 31px);
+    gap: 2vh;
+    padding: 20px 10px;
+    color: white;
+}
+.add-task {
+    padding: 20px;
+    border: 0.5px solid white;
+    border-radius: 1vh;
+}
+.add-task input {
+    text-align: center;
+    border-radius: 0.8vh;
+    background-color: rgb(25, 25, 25);
+    border-bottom: 0.1vh solid white;
+    font-size: 110%;
+    width: 30vh;
+}
+.add-task input:focus {
+    outline: none;
+    border-bottom: 0.1vh solid white;
+    color: white;
+}
+button {
+    border: 0.1vh solid white;
+    border-radius: 1vh;
+    padding: 1vh;
+    font-weight: 900;
+    font-size: 90%;
+    background: rgb(25, 25, 25);
+    color: white;
+    margin-left: 20px;
+}
+button:hover {
+    cursor: pointer;
+    scale: 1.05;
+}
+.task-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2vh 2vh 0vh;
+    gap: 3vh;
+}
+.task-list p {
+    margin-left: 2vh;
+}
+.todo {
+    border-bottom: 0.2vh solid white;
+    display: flex;
+    justify-content: space-between;
+    font-size: 120%;
+    font-weight: 700;
+    width: 70vh;
+}
+.todo-actions {
+    display: flex;
+    gap: 2vh;
+    font-size: 150%;
+    margin-right: 2vh;
+}
+.delete:hover {
+    color: rgb(255, 60, 60);
+    scale: 1.2;
+    cursor: pointer;
+}
+
+.complete {
+    color: rgb(80, 255, 80);
+}
+.footer {
+    background-color: rgb(25, 25, 25);
+    color: white;
+    text-align: center;
+    padding: 5px;
+}
+.footer a {
+    text-decoration: none;
+    color: white;
+}
