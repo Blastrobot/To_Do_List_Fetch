@@ -1,11 +1,12 @@
-import { element } from "prop-types";
 import React, { useEffect, useState } from "react";
 
-//create your first component
+// Método que me explico José, main differences en el uso de la función addTask y en el 2. fetch de la función getFetchTask
+// Corrige así además el bug, de que borraba aleatoriamente tasks de mi base de datos al eliminarlas & cada vez que hacía un GET en Postman me devolvía distintos valores
+
 const Home = () => {
 	
-	const [list, setList] = useState([]);
-	const [input, setInput] = useState("");
+	const [list, setList] = useState([]); // primer useState donde voy a trabajar con los componentes que se guardan en mi lista
+	const [input, setInput] = useState(""); // segundo useState donde voy a trabajar con los componentes que introduzco en mi submit/caja/inputbox
 	
 	// GET FETCH FUNCTION
 	const getFetchTask = () => {
@@ -15,111 +16,74 @@ const Home = () => {
 			redirect: "follow"
 		};
 		fetch(URL, request)
-			.then(response => response.json()) //then es metodo del fetch, response es una variable que le doy yo nombre, jason es una función que recoje mis datos del response
-			.then(result => {result.map((element) => {setList((e) => [...e, element.label]);})})
-			// .then(result => { result.map( (item) => {setList((e) => [...e, item.label]);})}) //creo un nuevo parametro e, y luego le asigno un valor nuevo con element.label
+			.then(response => response.json()) //then es metodo del fetch, response es una variable que le doy yo nombre, json es una función que recoje mis datos del response
+			.then(result => {setList(result)})
 			.catch(error => console.log("Error", error))
 	};
 
 	// PUT FETCH FUNCTION
 	const putFetchTask = (lista) => {
+		console.log(lista);
 		const URL = "https://assets.breatheco.de/apis/fake/todos/user/blastronaut";
 		const request = {
 			method: "PUT",
-			header: { 
+			headers: { 
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify(lista),
+			body: JSON.stringify(lista), // como la base de datos no reconoce el formato de array que le envío, se "traduce" mediante este stringify para que así la base de datos lo cambie y entienda
 		};
-		// alert (lista[5].label); una alerta para ver si me devolvia el parametro lista que le pasaba, en este caso me devuelve el nuevo item que le escribo
 		fetch(URL, request)
 			.then(response => response.json())
-			.then(result => console.log("Alles gut", result))
+			.then(result => {getFetchTask(); console.log("Alles gut", result)})
 			.catch(error => console.log("No carga", error))
 	};
 
-	// PUT FETCH FUNCTION ASYN METHOD
-	// const putFetchTask = async (lista) => {
-	// 	const URL = "https://assets.breatheco.de/apis/fake/todos/user/blastronaut";
-	// 	const request = {
-	// 		method: "PUT",
-	// 		header: { 
-	// 			'Content-Type': 'application/json',
-	// 		},
-	// 		body: JSON.stringify(lista),
-	// 	};
-	// 	const response = await fetch(URL, request);
-	// 	const result = await response.json();
-	// };
-
+	// función addTask que será llamada cuando clique en el add button o cuando presione enter, mediante el onSubmit, línea 76
 	const addTask = (event) => {
 		event.preventDefault();
 		if (input === ""){
 			return
 		}
-		else { // enviando mi nuevo task a mi lista de tareas
-			// generar el array que le vamos a enviar a fetch
-			const nuevaLista = [];
-			// { label: "tarea nueva", done: false } -> ejemplo de cada elemento del array que quiero
-			for (let i = 0; i < list.length; i++) {
-				const element = list[i];
-				let item = {};
-				// 	"label": {element},
-				// 	"done": false
-				// }; definiendo un objeto del elemento item
-				item["label"] = element; //creando un objeto como en la linea 26 con la propiedad label
-				item["done"] = false; //creando otro objeto como en la linea 26 con la propiedad done
-				nuevaLista.push(item); // actualizo mi nuevo array con los nuevos items que he declarado, cada elemento tiene un objeto
-			};
-			nuevaLista.push({"label": input, "done": false});
-			// alert (nuevaLista[nuevaLista.length - 1].label);
-			
-			// debugger;
-			
-			// let newitem = {};
-			// newitem[label] = input;
-			// newitem[done] = false;
-			// nuevaLista.push(newitem);
-	
-			// envio el new array al fetch
-			putFetchTask(nuevaLista);
-	
+		else {
+			putFetchTask([...list, {"label": input, "done": false}]);
+
 			// clear input task
 			setInput ("");
-			setList([...list, input]);
 		}
 
 	};
 
 	const deleteTask = (i) => {
-		const newList = [...list];
-		newList.splice(i, 1);
-		setList(newList);
+		const newArray = list.filter((value, index) => {
+			return index == i ? null : value
+			// return indice =! i ? value : index; esto es lo mismo pero planteándo el ternario a la inversa para que de el mismo resultado
+		})
+		putFetchTask(newArray);
 	};
 
-	//use effect
+	// Llamando al useEffect, para que me devuelva el getFetchTask, cada vez que recargo la app/web
 	useEffect(() => {
 		getFetchTask()
 	}, []);
 
 return (
 	<div className="whole-container">
-		<div className="title">
+		<div className="title"> {/* Header */}
 			<h2>To do list</h2>
 			<h5>Keeping track of my tasks</h5>
 		</div>
-		<div className="task-container">
-			<div className="add-task">
+		<div className="task-container"> {/* Whole page div */}
+			<div className="add-task"> {/* Input box + Button */}
 				<form onSubmit={addTask}>
 					<input type="text" placeholder="Write down a task" onChange={(e) => setInput(e.target.value)} value={input}/>
 					<button type="submit">Add</button>	
 				</form>
 			</div>
-			<div className="task-list">
+			<div className="task-list"> {/* Lista donde se guardan todos mis inputs */}
 			{list.map((task, i) => {
 				return (
 					<li key={i} className="todo">
-						<ul>{task}</ul>
+						<ul>{task.label}</ul>
 						<div className="todo-actions">
 							<i className="fa-solid fa-xmark delete" onClick={() => deleteTask (i)}></i>
 						</div>
@@ -128,7 +92,7 @@ return (
 			{list.length ? <span>{list.length} item left</span> : <span>No tasks! Add a task</span>}
 			</div>
 		</div>
-		<div className="footer">
+		<div className="footer"> {/* Footer */}
 			<p>Copyright &copy; <a href="https://github.com/blastrobot" target="_blank">Blastronaut</a></p>
 		</div>
 	</div>
